@@ -11,3 +11,6 @@ def create_address(db: Session, address: schemas.AddressCreate):
     db.commit()
     db.refresh(db_address)
     return db_address
+
+def get_addresses(db: Session):
+    return db.query(models.Address).all()

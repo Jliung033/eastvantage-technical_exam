@@ -25,3 +25,8 @@ def root():
 @app.post("/addresses")
 def create_address(address: schemas.AddressCreate, db: Session = Depends(get_db)):
     return crud.create_address(db, address)
+
+# get address
+@app.get("/addresses")
+def get_addresses(db: Session = Depends(get_db)):
+    return crud.get_addresses(db)
