@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-
+from fastapi import HTTPException
 import models, schemas, crud
 from database import SessionLocal, engine, Base
 
@@ -27,6 +27,35 @@ def create_address(address: schemas.AddressCreate, db: Session = Depends(get_db)
     return crud.create_address(db, address)
 
 # get address
-@app.get("/addresses")
-def get_addresses(db: Session = Depends(get_db)):
-    return crud.get_addresses(db)
+@app.get("/addresses/{address_id}")
+def get_address(address_id: int, db: Session = Depends(get_db)):
+    address = crud.get_address(db, address_id)
+    if not address:
+        raise HTTPException(status_code=404, detail="Address not found")
+    return address
+
+# delete address
+@app.delete("/addresses/{address_id}")
+def delete_address(address_id: int, db: Session = Depends(get_db)):
+    address = crud.delete_address(db, address_id)
+    if not address:
+        raise HTTPException(status_code=404, detail="Address not found")
+    return address
+
+# view address
+@app.put("/addresses/{address_id}")
+def update_address(address_id: int, updated: schemas.AddressUpdate, db: Session = Depends(get_db)):
+    address = crud.update_address(db, address_id, updated)
+    if not address:
+        raise HTTPException(status_code=404, detail="Address not found")
+    return address
+
+
+@app.get("/addresses/nearby")
+def get_nearby_addresses(
+    lat: float,
+    lng: float,
+    distance: float,
+    db: Session = Depends(get_db)
+):
+    return crud.get_nearby_addresses(db, lat, lng, distance)
