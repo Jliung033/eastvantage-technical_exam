@@ -1,6 +1,5 @@
-from pydantic import BaseModel          #For validation
+from pydantic import BaseModel, Field  # request validation
 
-from pydantic import BaseModel, Field
 
 class AddressCreate(BaseModel):
     name: str = Field(..., min_length=1)
