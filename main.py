@@ -30,6 +30,16 @@ def create_address(address: schemas.AddressCreate, db: Session = Depends(get_db)
 def get_addresses(db: Session = Depends(get_db)):
     return crud.get_addresses(db)
 
+# NEARBY search
+@app.get("/addresses/nearby")
+def get_nearby_addresses(
+    lat: float,
+    lng: float,
+    distance_km: float,
+    db: Session = Depends(get_db)
+):
+    return crud.get_nearby_addresses(db, lat, lng, distance_km)
+
 # GET address by ID
 @app.get("/addresses/{address_id}")
 def get_address(address_id: int, db: Session = Depends(get_db)):
@@ -46,6 +56,7 @@ def update_address(address_id: int, updated: schemas.AddressUpdate, db: Session 
         raise HTTPException(status_code=404, detail="Address not found")
     return address
 
+
 # DELETE address
 @app.delete("/addresses/{address_id}")
 def delete_address(address_id: int, db: Session = Depends(get_db)):
@@ -53,13 +64,3 @@ def delete_address(address_id: int, db: Session = Depends(get_db)):
     if not address:
         raise HTTPException(status_code=404, detail="Address not found")
     return address
-
-# NEARBY search
-@app.get("/addresses/nearby")
-def get_nearby_addresses(
-    lat: float,
-    lng: float,
-    distance_km: float,
-    db: Session = Depends(get_db)
-):
-    return crud.get_nearby_addresses(db, lat, lng, distance_km)
